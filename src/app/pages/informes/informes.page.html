@@ -1,0 +1,63 @@
+<ion-header>
+  <ion-toolbar color="primary">
+    <ion-buttons slot="start">
+      <ion-menu-button aria-label="Abrir menú"></ion-menu-button>
+    </ion-buttons>
+    <ion-title>Informes</ion-title>
+    <ion-buttons slot="end">
+      <app-boton-ayuda seccion="informes" tema="los informes" />
+    </ion-buttons>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content class="ion-padding">
+  <main class="contenedor" id="contenido-principal">
+    <h1 class="titulo-pagina">Informes</h1>
+
+    <section class="seccion" aria-labelledby="titulo-tipos">
+      <h2 id="titulo-tipos">1. Elige el informe</h2>
+      <div class="tipos" role="group" aria-labelledby="titulo-tipos">
+        @for (o of opciones(); track o.tipo) {
+          <button
+            type="button"
+            class="tipo"
+            [class.activo]="tipo() === o.tipo"
+            [attr.aria-pressed]="tipo() === o.tipo"
+            (click)="seleccionar(o.tipo)"
+          >
+            <span class="nombre">{{ o.titulo }}</span>
+            <span class="desc">{{ o.descripcion }}</span>
+          </button>
+        }
+      </div>
+    </section>
+
+    <section class="seccion" aria-labelledby="titulo-vista">
+      <h2 id="titulo-vista">2. Revisa los datos y descarga</h2>
+      <div class="barra-acciones">
+        <p class="resumen">{{ informe().subtitulo }}</p>
+        <ion-button (click)="exportar('pdf')" [disabled]="generando() !== null">
+          @if (generando() === 'pdf') {
+            <ion-spinner slot="start" name="crescent" aria-hidden="true"></ion-spinner>
+          } @else {
+            <ion-icon slot="start" name="document-outline" aria-hidden="true"></ion-icon>
+          }
+          Descargar PDF
+        </ion-button>
+        <ion-button fill="outline" (click)="exportar('csv')" [disabled]="generando() !== null">
+          <ion-icon slot="start" name="grid-outline" aria-hidden="true"></ion-icon>
+          Descargar CSV
+        </ion-button>
+      </div>
+
+      <app-tabla-datos
+        [titulo]="informe().titulo"
+        [columnas]="informe().columnas"
+        [filas]="informe().filas"
+        [cargando]="cargando()"
+        [(busqueda)]="busqueda"
+        textoVacio="Este informe no tiene datos."
+      />
+    </section>
+  </main>
+</ion-content>

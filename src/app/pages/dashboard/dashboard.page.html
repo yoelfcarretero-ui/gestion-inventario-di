@@ -1,0 +1,150 @@
+<ion-header>
+  <ion-toolbar color="primary">
+    <ion-buttons slot="start">
+      <ion-menu-button aria-label="Abrir menú"></ion-menu-button>
+    </ion-buttons>
+    <ion-title>Cuadro de mando</ion-title>
+    <ion-buttons slot="end">
+      <app-boton-ayuda seccion="dashboard" tema="el cuadro de mando" />
+    </ion-buttons>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content class="ion-padding">
+  <main class="contenedor" id="contenido-principal">
+    <h1 class="titulo-pagina">Cuadro de mando</h1>
+
+    <section class="filtros tarjeta" aria-labelledby="titulo-filtros">
+      <h2 id="titulo-filtros" class="sr-only">Filtros</h2>
+      <ion-select label="Periodo" labelPlacement="stacked" fill="outline" interface="popover" [(ngModel)]="meses">
+        <ion-select-option [value]="3">Últimos 3 meses</ion-select-option>
+        <ion-select-option [value]="6">Últimos 6 meses</ion-select-option>
+        <ion-select-option [value]="12">Últimos 12 meses</ion-select-option>
+      </ion-select>
+
+      <ion-select label="Categoría" labelPlacement="stacked" fill="outline" interface="popover" [(ngModel)]="categoriaId">
+        <ion-select-option [value]="null">Todas</ion-select-option>
+        @for (c of inventario.categorias(); track c.id) {
+          <ion-select-option [value]="c.id">{{ c.nombre }}</ion-select-option>
+        }
+      </ion-select>
+
+      <ion-select label="Estado" labelPlacement="stacked" fill="outline" interface="popover" [(ngModel)]="estado">
+        <ion-select-option [value]="null">Todos (sin cancelados)</ion-select-option>
+        <ion-select-option value="pendiente">Pendiente</ion-select-option>
+        <ion-select-option value="enviado">Enviado</ion-select-option>
+        <ion-select-option value="entregado">Entregado</ion-select-option>
+        <ion-select-option value="cancelado">Cancelado</ion-select-option>
+      </ion-select>
+
+      <div class="acciones">
+        <ion-button fill="outline" (click)="recargar()" [disabled]="cargando()">
+          <ion-icon slot="start" name="refresh" aria-hidden="true"></ion-icon>
+          Actualizar
+        </ion-button>
+        <ion-button (click)="exportarResumen()">
+          <ion-icon slot="start" name="document-outline" aria-hidden="true"></ion-icon>
+          Exportar PDF
+        </ion-button>
+      </div>
+    </section>
+
+    @if (categoriaId() !== null || estado() !== null) {
+      <div class="activos" role="status">
+        <span>Filtros activos:</span>
+        @if (nombreCategoria()) {
+          <ion-button size="small" fill="outline" shape="round" (click)="categoriaId.set(null)" [attr.aria-label]="'Quitar filtro de categoría ' + nombreCategoria()">
+            {{ nombreCategoria() }}
+            <ion-icon slot="end" name="close-circle" aria-hidden="true"></ion-icon>
+          </ion-button>
+        }
+        @if (estado()) {
+          <ion-button size="small" fill="outline" shape="round" (click)="estado.set(null)" [attr.aria-label]="'Quitar filtro de estado ' + estado()">
+            {{ estado() }}
+            <ion-icon slot="end" name="close-circle" aria-hidden="true"></ion-icon>
+          </ion-button>
+        }
+        <ion-button fill="clear" size="small" (click)="limpiarFiltros()">Limpiar todo</ion-button>
+      </div>
+    }
+
+    @if (error()) {
+      <div class="alerta error" role="alert">
+        {{ error() }}
+        <ion-button size="small" fill="outline" (click)="recargar()">Reintentar</ion-button>
+      </div>
+    }
+
+    @if (cargando()) {
+      <p class="cargando" role="status">
+        <ion-spinner name="crescent" aria-hidden="true"></ion-spinner>
+        Cargando datos de la API (SQL) y de pedidos en tiempo real (NoSQL)…
+      </p>
+    }
+
+    <section class="seccion" aria-labelledby="titulo-kpi">
+      <h2 id="titulo-kpi">Indicadores · {{ descripcionFiltros() }}</h2>
+      <div class="rejilla-kpi">
+        <app-widget-estadistico etiqueta="Facturación" [valor]="formatearMoneda(datos().facturacion)" icono="cash-outline" [cargando]="cargando()" />
+        <app-widget-estadistico etiqueta="Pedidos" [valor]="formatearNumero(datos().numPedidos)" icono="cart-outline" color="secondary" [cargando]="cargando()" />
+        <app-widget-estadistico etiqueta="Ticket medio" [valor]="formatearMoneda(datos().ticketMedio)" icono="receipt-outline" color="tertiary" [cargando]="cargando()" />
+        <app-widget-estadistico
+          etiqueta="Valor del inventario"
+          [valor]="formatearMoneda(inventario.valorInventario())"
+          icono="cube-outline"
+          color="warning"
+          [detalle]="inventario.productosBajoStock() + ' productos bajo mínimo'"
+          [cargando]="cargando()"
+        />
+      </div>
+    </section>
+
+    <section class="seccion" aria-labelledby="titulo-graficos">
+      <h2 id="titulo-graficos">Gráficos</h2>
+      <p class="pista">Pulsa una barra o un sector (o usa «Ver datos» con el teclado) para filtrar todo el cuadro de mando.</p>
+      <div class="rejilla-graficos">
+        <app-grafico
+          tipo="line"
+          titulo="Ventas mensuales"
+          descripcion="Importe facturado por mes en el periodo seleccionado."
+          [etiquetas]="datos().ventasMensuales.etiquetas"
+          [series]="[{ etiqueta: 'Ventas', datos: datos().ventasMensuales.valores }]"
+          [formatoValor]="formatearMoneda"
+        />
+        <app-grafico
+          tipo="doughnut"
+          titulo="Pedidos por estado"
+          descripcion="Número de pedidos del periodo según su estado. Pulsa un estado para filtrar."
+          [etiquetas]="datos().porEstado.etiquetas"
+          [series]="[{ etiqueta: 'Pedidos', datos: datos().porEstado.valores }]"
+          [formatoValor]="formatoPedidos"
+          [resaltado]="indiceEstado()"
+          (elementoSeleccionado)="alSeleccionarEstado($event)"
+        />
+        <app-grafico
+          tipo="bar"
+          titulo="Ventas por categoría"
+          descripcion="Importe vendido de cada categoría. Pulsa una categoría para filtrar."
+          [etiquetas]="datos().porCategoria.etiquetas"
+          [series]="[{ etiqueta: 'Ventas', datos: datos().porCategoria.valores }]"
+          [formatoValor]="formatearMoneda"
+          [resaltado]="indiceCategoria()"
+          (elementoSeleccionado)="alSeleccionarCategoria($event)"
+        />
+        <app-grafico
+          tipo="bar"
+          [horizontal]="true"
+          titulo="Top 5 productos (unidades)"
+          descripcion="Productos con más unidades vendidas con los filtros actuales."
+          [etiquetas]="datos().topProductos.etiquetas"
+          [series]="[{ etiqueta: 'Unidades', datos: datos().topProductos.valores }]"
+          [formatoValor]="formatoUnidades"
+        />
+      </div>
+    </section>
+
+    @if (ultimaActualizacion(); as fecha) {
+      <p class="pista">Catálogo actualizado a las {{ fecha.toLocaleTimeString('es-ES') }}. Los pedidos se actualizan en tiempo real.</p>
+    }
+  </main>
+</ion-content>
