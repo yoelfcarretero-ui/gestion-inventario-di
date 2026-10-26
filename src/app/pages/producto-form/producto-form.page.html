@@ -1,0 +1,142 @@
+<ion-header>
+  <ion-toolbar color="primary">
+    <ion-buttons slot="start">
+      <ion-back-button defaultHref="/productos" text="Volver"></ion-back-button>
+    </ion-buttons>
+    <ion-title>{{ esEdicion() ? 'Editar producto' : 'Nuevo producto' }}</ion-title>
+    <ion-buttons slot="end">
+      <app-boton-ayuda seccion="productos" tema="el alta de productos" />
+    </ion-buttons>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content class="ion-padding">
+  <main class="contenedor" id="contenido-principal">
+    <h1 class="titulo-pagina">{{ esEdicion() ? 'Editar producto' : 'Alta de producto' }}</h1>
+
+    @if (error()) {
+      <p class="alerta error" role="alert">{{ error() }}</p>
+    }
+
+    @if (cargando()) {
+      <p role="status"><ion-spinner name="crescent" aria-hidden="true"></ion-spinner> Cargando producto…</p>
+    } @else {
+      <form class="formulario tarjeta" [formGroup]="form" (ngSubmit)="guardar()" novalidate>
+        <p class="ayuda-campo">Los campos marcados con * son obligatorios.</p>
+        <div class="campos">
+          <ion-input
+            formControlName="sku"
+            label="SKU *"
+            labelPlacement="stacked"
+            fill="outline"
+            autocapitalize="characters"
+            [helperText]="ayudaSku()"
+            [errorText]="errores().sku"
+            required
+          ></ion-input>
+
+          <ion-input
+            formControlName="nombre"
+            label="Nombre *"
+            labelPlacement="stacked"
+            fill="outline"
+            [counter]="true"
+            [maxlength]="80"
+            [errorText]="errores().nombre"
+            required
+          ></ion-input>
+
+          <ion-textarea
+            class="completo"
+            formControlName="descripcion"
+            label="Descripción"
+            labelPlacement="stacked"
+            fill="outline"
+            [autoGrow]="true"
+            [counter]="true"
+            [maxlength]="300"
+            [errorText]="errores().descripcion"
+          ></ion-textarea>
+
+          <ion-select
+            formControlName="categoriaId"
+            label="Categoría *"
+            labelPlacement="stacked"
+            fill="outline"
+            interface="popover"
+            placeholder="Selecciona…"
+            [errorText]="errores().categoriaId"
+          >
+            @for (c of inventario.categorias(); track c.id) {
+              <ion-select-option [value]="c.id">{{ c.nombre }}</ion-select-option>
+            }
+          </ion-select>
+
+          <ion-select
+            formControlName="proveedorId"
+            label="Proveedor *"
+            labelPlacement="stacked"
+            fill="outline"
+            interface="popover"
+            placeholder="Selecciona…"
+            [errorText]="errores().proveedorId"
+          >
+            @for (p of inventario.proveedores(); track p.id) {
+              <ion-select-option [value]="p.id">{{ p.nombre }}</ion-select-option>
+            }
+          </ion-select>
+
+          <ion-input
+            formControlName="precio"
+            type="number"
+            inputmode="decimal"
+            step="0.01"
+            min="0"
+            label="Precio (€) *"
+            labelPlacement="stacked"
+            fill="outline"
+            [errorText]="errores().precio"
+            required
+          ></ion-input>
+
+          <ion-input
+            formControlName="stock"
+            type="number"
+            inputmode="numeric"
+            min="0"
+            label="Stock actual *"
+            labelPlacement="stacked"
+            fill="outline"
+            [errorText]="errores().stock"
+            required
+          ></ion-input>
+
+          <ion-input
+            formControlName="stockMinimo"
+            type="number"
+            inputmode="numeric"
+            min="0"
+            label="Stock mínimo *"
+            labelPlacement="stacked"
+            fill="outline"
+            helperText="Por debajo de esta cantidad se avisará para reponer."
+            [errorText]="errores().stockMinimo"
+            required
+          ></ion-input>
+        </div>
+
+        <div class="barra-acciones ion-margin-top">
+          <ion-button type="submit" [disabled]="guardando()">
+            @if (guardando()) {
+              <ion-spinner name="crescent" aria-hidden="true"></ion-spinner>
+              <span class="sr-only">Guardando…</span>
+            } @else {
+              {{ esEdicion() ? 'Guardar cambios' : 'Crear producto' }}
+            }
+          </ion-button>
+          <ion-button fill="outline" color="medium" routerDirection="back" routerLink="/productos">Cancelar</ion-button>
+        </div>
+      </form>
+    }
+  </main>
+</ion-content>

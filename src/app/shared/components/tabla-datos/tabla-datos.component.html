@@ -1,0 +1,122 @@
+<div class="tabla-datos">
+  <div class="barra">
+    <label class="buscador" [for]="idBusqueda">
+      <ion-icon name="search-outline" aria-hidden="true"></ion-icon>
+      <span class="sr-only">Buscar en {{ titulo() }}</span>
+      <input
+        [id]="idBusqueda"
+        type="search"
+        [(ngModel)]="busqueda"
+        placeholder="Buscar…"
+        autocomplete="off"
+      />
+    </label>
+    <p class="contador" aria-live="polite" role="status">
+      {{ filtradas().length }} {{ filtradas().length === 1 ? 'resultado' : 'resultados' }}
+    </p>
+  </div>
+
+  @if (cargando()) {
+    <div class="estado" role="status">
+      <ion-spinner name="crescent" aria-hidden="true"></ion-spinner>
+      <span>Cargando datos…</span>
+    </div>
+  } @else if (error()) {
+    <div class="estado error" role="alert">
+      <p>{{ error() }}</p>
+      <ion-button fill="outline" (click)="reintentar.emit()">
+        <ion-icon slot="start" name="refresh" aria-hidden="true"></ion-icon>
+        Reintentar
+      </ion-button>
+    </div>
+  } @else {
+    <div class="contenedor-tabla">
+      <table>
+        <caption class="sr-only">{{ titulo() }}</caption>
+        <thead>
+          <tr>
+            @for (col of columnas(); track col.clave) {
+              <th
+                scope="col"
+                [attr.aria-sort]="col.ordenable === false ? null : ariaSort(col)"
+                [class.numerico]="col.tipo === 'moneda' || col.tipo === 'numero'"
+                [class.ocultar-movil]="col.ocultarEnMovil"
+              >
+                @if (col.ordenable === false) {
+                  {{ col.etiqueta }}
+                } @else {
+                  <button type="button" class="ordenar" (click)="ordenarPor(col)">
+                    {{ col.etiqueta }}
+                    <ion-icon
+                      aria-hidden="true"
+                      [name]="ariaSort(col) === 'ascending' ? 'arrow-up' : ariaSort(col) === 'descending' ? 'arrow-down' : 'swap-vertical'"
+                    ></ion-icon>
+                  </button>
+                }
+              </th>
+            }
+            @if (hayAcciones()) {
+              <th scope="col" class="acciones-cab">Acciones</th>
+            }
+          </tr>
+        </thead>
+        <tbody>
+          @for (fila of visibles(); track idDe(fila)) {
+            <tr
+              [class.seleccionable]="seleccionable()"
+              [attr.tabindex]="seleccionable() ? 0 : null"
+              [attr.aria-label]="seleccionable() ? 'Ver detalle de ' + nombreFila(fila) : null"
+              (click)="seleccionar(fila)"
+              (keydown.enter)="seleccionar(fila)"
+            >
+              @for (col of columnas(); track col.clave) {
+                <td
+                  [attr.data-etiqueta]="col.etiqueta"
+                  [class.numerico]="col.tipo === 'moneda' || col.tipo === 'numero'"
+                  [class.ocultar-movil]="col.ocultarEnMovil"
+                >
+                  @if (col.tipo === 'estado') {
+                    <span [class]="'badge estado-' + fila[col.clave]">{{ valorCelda(fila, col) }}</span>
+                  } @else {
+                    {{ valorCelda(fila, col) }}
+                  }
+                </td>
+              }
+              @if (hayAcciones()) {
+                <td class="acciones" data-etiqueta="Acciones">
+                  @for (a of accionesDe(fila); track a.id) {
+                    <ion-button
+                      size="small"
+                      fill="clear"
+                      [color]="a.color ?? 'primary'"
+                      [attr.aria-label]="a.etiqueta + ' ' + nombreFila(fila)"
+                      (click)="$event.stopPropagation(); accion.emit({ accion: a.id, fila })"
+                    >
+                      <ion-icon slot="icon-only" [name]="a.icono" aria-hidden="true"></ion-icon>
+                    </ion-button>
+                  }
+                </td>
+              }
+            </tr>
+          } @empty {
+            <tr class="vacia">
+              <td [attr.colspan]="columnas().length + (hayAcciones() ? 1 : 0)">{{ textoVacio() }}</td>
+            </tr>
+          }
+        </tbody>
+      </table>
+    </div>
+
+    @if (totalPaginas() > 1) {
+      <nav class="paginacion" [attr.aria-label]="'Paginación de ' + titulo()">
+        <ion-button fill="outline" size="small" [disabled]="pagina() <= 1" (click)="irAPagina(pagina() - 1)" aria-label="Página anterior">
+          <ion-icon slot="icon-only" name="chevron-back" aria-hidden="true"></ion-icon>
+        </ion-button>
+        <span aria-current="page">Página {{ pagina() }} de {{ totalPaginas() }}</span>
+        <ion-button fill="outline" size="small" [disabled]="pagina() >= totalPaginas()" (click)="irAPagina(pagina() + 1)" aria-label="Página siguiente">
+          <ion-icon slot="icon-only" name="chevron-forward" aria-hidden="true"></ion-icon>
+        </ion-button>
+      </nav>
+    }
+  }
+</div>

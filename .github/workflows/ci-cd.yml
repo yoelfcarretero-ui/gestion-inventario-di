@@ -1,0 +1,83 @@
+# Integración y despliegue continuos.
+#
+# - En cada push y Pull Request a `develop` o `main`: lint, pruebas unitarias, build de producción y documentación.
+# - Solo en `main` y SOLO si todo lo anterior pasa: despliegue a producción en Vercel.
+#   Si fallan las pruebas, el job de despliegue no se ejecuta (el despliegue queda bloqueado).
+#
+# Secretos necesarios en GitHub (Settings → Secrets and variables → Actions):
+#   VERCEL_TOKEN, VERCEL_ORG_ID, VERCEL_PROJECT_ID
+
+name: CI/CD
+
+on:
+  push:
+    branches: [main, develop]
+  pull_request:
+    branches: [main, develop]
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  calidad:
+    name: Lint, tests y build
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 24
+          cache: npm
+
+      - name: Instalar dependencias
+        run: npm ci
+
+      - name: Lint
+        run: npm run lint
+
+      - name: Pruebas unitarias
+        run: npm run test:ci
+
+      - name: Build de producción + documentación (Compodoc)
+        run: npm run build:produccion
+
+      - name: Publicar artefacto
+        uses: actions/upload-artifact@v4
+        with:
+          name: www
+          path: www
+          retention-days: 7
+
+  despliegue:
+    name: Despliegue en Vercel (producción)
+    needs: calidad
+    if: github.event_name == 'push' && github.ref == 'refs/heads/main'
+    runs-on: ubuntu-latest
+    environment:
+      name: produccion
+      url: ${{ steps.desplegar.outputs.url }}
+    env:
+      VERCEL_ORG_ID: ${{ secrets.VERCEL_ORG_ID }}
+      VERCEL_PROJECT_ID: ${{ secrets.VERCEL_PROJECT_ID }}
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 24
+          cache: npm
+
+      - name: Instalar Vercel CLI
+        run: npm install --global vercel@latest
+
+      - name: Descargar configuración del proyecto
+        run: vercel pull --yes --environment=production --token=${{ secrets.VERCEL_TOKEN }}
+
+      - name: Compilar
+        run: vercel build --prod --token=${{ secrets.VERCEL_TOKEN }}
+
+      - name: Desplegar
+        id: desplegar
+        run: echo "url=$(vercel deploy --prebuilt --prod --token=${{ secrets.VERCEL_TOKEN }})" >> "$GITHUB_OUTPUT"

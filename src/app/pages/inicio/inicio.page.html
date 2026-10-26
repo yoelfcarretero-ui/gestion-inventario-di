@@ -1,0 +1,122 @@
+<ion-header>
+  <ion-toolbar color="primary">
+    <ion-buttons slot="start">
+      <ion-menu-button aria-label="Abrir menú"></ion-menu-button>
+    </ion-buttons>
+    <ion-title>Inicio</ion-title>
+    <ion-buttons slot="end">
+      <app-boton-ayuda seccion="inicio" tema="la página de inicio" />
+    </ion-buttons>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content class="ion-padding">
+  <main class="contenedor" id="contenido-principal">
+    <h1 class="titulo-pagina">{{ saludo() }}</h1>
+
+    <section class="seccion" aria-labelledby="titulo-resumen">
+      <h2 id="titulo-resumen">Resumen</h2>
+      <div class="rejilla-kpi">
+        @if (auth.esAdmin()) {
+          <app-widget-estadistico
+            etiqueta="Productos en catálogo"
+            [valor]="inventario.productos().length"
+            icono="cube-outline"
+            [detalle]="formatearNumero(inventario.totalUnidades()) + ' unidades'"
+            [cargando]="inventario.estado() === 'cargando'"
+            interactivo
+            (seleccionado)="ir('/productos')"
+          />
+          <app-widget-estadistico
+            etiqueta="Valor del inventario"
+            [valor]="formatearMoneda(inventario.valorInventario())"
+            icono="cash-outline"
+            color="secondary"
+            [cargando]="inventario.estado() === 'cargando'"
+          />
+          <app-widget-estadistico
+            etiqueta="Productos bajo mínimo"
+            [valor]="inventario.productosBajoStock()"
+            icono="alert-circle-outline"
+            color="danger"
+            detalle="Requieren reposición"
+            [cargando]="inventario.estado() === 'cargando'"
+            interactivo
+            (seleccionado)="ir('/productos', { filtro: 'bajo-stock' })"
+          />
+          <app-widget-estadistico
+            etiqueta="Pedidos pendientes"
+            [valor]="pendientes()"
+            icono="time-outline"
+            color="warning"
+            [cargando]="cargandoPedidos()"
+            interactivo
+            (seleccionado)="ir('/pedidos', { estado: 'pendiente' })"
+          />
+        } @else {
+          <app-widget-estadistico
+            etiqueta="Mis pedidos"
+            [valor]="pedidos()?.length ?? 0"
+            icono="cart-outline"
+            [cargando]="cargandoPedidos()"
+            interactivo
+            (seleccionado)="ir('/pedidos')"
+          />
+          <app-widget-estadistico
+            etiqueta="Pendientes de envío"
+            [valor]="pendientes()"
+            icono="time-outline"
+            color="warning"
+            [cargando]="cargandoPedidos()"
+            interactivo
+            (seleccionado)="ir('/pedidos', { estado: 'pendiente' })"
+          />
+          <app-widget-estadistico
+            etiqueta="Importe total"
+            [valor]="importeTotal()"
+            icono="wallet-outline"
+            color="secondary"
+            detalle="Sin contar cancelados"
+            [cargando]="cargandoPedidos()"
+          />
+          <app-widget-estadistico
+            etiqueta="Productos disponibles"
+            [valor]="inventario.productos().length"
+            icono="cube-outline"
+            color="tertiary"
+            [cargando]="inventario.estado() === 'cargando'"
+            interactivo
+            (seleccionado)="ir('/productos')"
+          />
+        }
+      </div>
+    </section>
+
+    <section class="seccion" aria-labelledby="titulo-recientes">
+      <h2 id="titulo-recientes">{{ auth.esAdmin() ? 'Últimos pedidos' : 'Mis últimos pedidos' }}</h2>
+      <app-tabla-datos
+        titulo="Últimos pedidos"
+        [columnas]="columnasPedidos"
+        [filas]="recientes()"
+        [cargando]="cargandoPedidos()"
+        textoVacio="Todavía no hay pedidos."
+      />
+    </section>
+
+    @if (auth.esAdmin()) {
+      <section class="seccion" aria-labelledby="titulo-stock">
+        <h2 id="titulo-stock">Productos que necesitan reposición</h2>
+        <app-tabla-datos
+          titulo="Productos bajo stock mínimo"
+          [columnas]="columnasStock"
+          [filas]="bajoStock()"
+          [cargando]="inventario.estado() === 'cargando'"
+          [error]="inventario.error()"
+          (reintentar)="inventario.cargar(true)"
+          textoVacio="Todo el stock está por encima del mínimo."
+          [tamPagina]="5"
+        />
+      </section>
+    }
+  </main>
+</ion-content>

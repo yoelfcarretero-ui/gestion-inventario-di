@@ -1,0 +1,77 @@
+<ion-content class="ion-padding">
+  <main class="acceso" id="contenido-principal">
+    <div class="tarjeta panel">
+      <h1>Crear cuenta</h1>
+      <p class="subtitulo">Las cuentas nuevas tienen el rol Usuario estándar.</p>
+
+      @if (error()) {
+        <p class="alerta error" role="alert">{{ error() }}</p>
+      }
+
+      <form [formGroup]="form" (ngSubmit)="enviar()" novalidate>
+        <ion-input
+          formControlName="nombre"
+          label="Nombre completo"
+          labelPlacement="stacked"
+          fill="outline"
+          autocomplete="name"
+          [counter]="true"
+          [maxlength]="60"
+          [errorText]="errorNombre()"
+          required
+        ></ion-input>
+
+        <ion-input
+          formControlName="email"
+          type="email"
+          label="Correo electrónico"
+          labelPlacement="stacked"
+          fill="outline"
+          autocomplete="email"
+          inputmode="email"
+          [helperText]="ayudaEmail()"
+          [errorText]="errorEmail()"
+          [attr.aria-busy]="form.controls.email.pending"
+          required
+        ></ion-input>
+
+        <ion-input
+          formControlName="password"
+          type="password"
+          label="Contraseña"
+          labelPlacement="stacked"
+          fill="outline"
+          autocomplete="new-password"
+          helperText="Mínimo 8 caracteres, con letras y números."
+          [errorText]="errorPassword()"
+          required
+        >
+          <ion-input-password-toggle slot="end" showLabel="Mostrar contraseña" hideLabel="Ocultar contraseña"></ion-input-password-toggle>
+        </ion-input>
+
+        <ion-input
+          formControlName="confirmar"
+          type="password"
+          label="Repite la contraseña"
+          labelPlacement="stacked"
+          fill="outline"
+          autocomplete="new-password"
+          [class.ion-invalid]="confirmarInvalido()"
+          [errorText]="errorConfirmar()"
+          required
+        ></ion-input>
+
+        <ion-button type="submit" expand="block" [disabled]="enviando()">
+          @if (enviando()) {
+            <ion-spinner name="crescent" aria-hidden="true"></ion-spinner>
+            <span class="sr-only">Creando cuenta…</span>
+          } @else {
+            Crear cuenta
+          }
+        </ion-button>
+      </form>
+
+      <p class="pie">¿Ya tienes cuenta? <a routerLink="/login">Inicia sesión</a></p>
+    </div>
+  </main>
+</ion-content>

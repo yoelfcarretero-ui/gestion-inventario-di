@@ -1,0 +1,56 @@
+<ion-header>
+  <ion-toolbar color="primary">
+    <ion-buttons slot="start">
+      <ion-menu-button aria-label="Abrir menú"></ion-menu-button>
+    </ion-buttons>
+    <ion-title>Productos</ion-title>
+    <ion-buttons slot="end">
+      <app-boton-ayuda seccion="productos" tema="productos" />
+    </ion-buttons>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content class="ion-padding">
+  <main class="contenedor" id="contenido-principal">
+    <h1 class="titulo-pagina">Catálogo de productos</h1>
+
+    <div class="barra-acciones">
+      <ion-select
+        class="filtro"
+        label="Categoría"
+        labelPlacement="stacked"
+        fill="outline"
+        interface="popover"
+        [(ngModel)]="categoriaId"
+      >
+        <ion-select-option [value]="null">Todas</ion-select-option>
+        @for (c of inventario.categorias(); track c.id) {
+          <ion-select-option [value]="c.id">{{ c.nombre }}</ion-select-option>
+        }
+      </ion-select>
+
+      <ion-toggle [(ngModel)]="soloBajoStock" labelPlacement="end">Solo bajo mínimo</ion-toggle>
+
+      @if (auth.esAdmin()) {
+        <ion-button class="ion-margin-start" (click)="nuevo()">
+          <ion-icon slot="start" name="add" aria-hidden="true"></ion-icon>
+          Nuevo producto
+        </ion-button>
+      }
+    </div>
+
+    <app-tabla-datos
+      titulo="Productos"
+      [columnas]="columnas"
+      [filas]="filas()"
+      [acciones]="auth.esAdmin() ? acciones : []"
+      [cargando]="inventario.estado() === 'cargando'"
+      [error]="inventario.error()"
+      [columnaNombre]="'nombre'"
+      [(busqueda)]="busqueda"
+      (accion)="alAccion($event)"
+      (reintentar)="inventario.cargar(true)"
+      textoVacio="No hay productos que coincidan con los filtros."
+    />
+  </main>
+</ion-content>

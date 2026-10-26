@@ -1,0 +1,55 @@
+.acceso {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 100%;
+}
+
+.panel {
+  width: 100%;
+  max-width: 420px;
+  padding: 32px 24px;
+}
+
+.logo {
+  display: grid;
+  place-items: center;
+  width: 56px;
+  height: 56px;
+  margin: 0 auto 12px;
+  border-radius: 14px;
+  background: var(--ion-color-primary);
+  color: #ffffff;
+  font-size: 2rem;
+}
+
+h1 {
+  margin: 0;
+  font-size: 1.5rem;
+  text-align: center;
+}
+
+.subtitulo {
+  margin: 4px 0 24px;
+  color: var(--app-texto-secundario);
+  text-align: center;
+}
+
+ion-input {
+  margin-bottom: 16px;
+}
+
+ion-button {
+  margin-top: 8px;
+  min-height: 48px;
+}
+
+.pie {
+  margin: 24px 0 0;
+  text-align: center;
+
+  a {
+    color: var(--ion-color-primary);
+    font-weight: 600;
+  }
+}

@@ -65,6 +65,21 @@ yarn-error.log
 testem.log
 /typings
 
+# Documentación generada (se publica en /docs del despliegue)
+/docs-tecnica
+
+# Credenciales de prueba locales: nunca se suben al repositorio
+CREDENCIALES*.md
+
+# Informes de Lighthouse generados en local (se adjuntan en el PDF de entrega)
+/lighthouse
+
+# Vercel
+.vercel
+
+# Configuración local de Claude
+/.claude
+
 # System files
 .DS_Store
 Thumbs.db

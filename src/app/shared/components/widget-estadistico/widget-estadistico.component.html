@@ -1,0 +1,26 @@
+<ng-template #contenido>
+  <span class="icono" [style.--color]="'var(--ion-color-' + color() + ')'" aria-hidden="true">
+    <ion-icon [name]="icono()"></ion-icon>
+  </span>
+  <span class="texto">
+    <span class="etiqueta">{{ etiqueta() }}</span>
+    @if (cargando()) {
+      <ion-skeleton-text [animated]="true" class="esqueleto"></ion-skeleton-text>
+    } @else {
+      <span class="valor">{{ valor() }}</span>
+    }
+    @if (detalle()) {
+      <span class="detalle">{{ detalle() }}</span>
+    }
+  </span>
+</ng-template>
+
+@if (interactivo()) {
+  <button type="button" class="widget interactivo" [class.activo]="activo()" [attr.aria-pressed]="activo()" [attr.aria-label]="descripcion()" (click)="seleccionado.emit()">
+    <ng-container [ngTemplateOutlet]="contenido" />
+  </button>
+} @else {
+  <div class="widget" role="group" [attr.aria-label]="descripcion()" [attr.aria-busy]="cargando()">
+    <ng-container [ngTemplateOutlet]="contenido" />
+  </div>
+}

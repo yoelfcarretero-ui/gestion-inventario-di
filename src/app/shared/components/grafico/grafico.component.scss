@@ -1,0 +1,81 @@
+:host {
+  display: block;
+  height: 100%;
+}
+
+.grafico {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  margin: 0;
+  padding: 16px;
+  border: 1px solid var(--app-borde);
+  border-radius: 12px;
+  background: var(--app-superficie);
+}
+
+figcaption {
+  h3 {
+    margin: 0;
+    font-size: 1rem;
+    font-weight: 600;
+  }
+
+  p {
+    margin: 4px 0 0;
+    color: var(--app-texto-secundario);
+    font-size: 0.8125rem;
+  }
+}
+
+.lienzo {
+  position: relative;
+  flex: 1;
+  min-height: 240px;
+  margin-top: 12px;
+}
+
+.datos {
+  margin-top: 12px;
+  font-size: 0.875rem;
+
+  summary {
+    min-height: 32px;
+    color: var(--ion-color-primary);
+    cursor: pointer;
+  }
+
+  table {
+    width: 100%;
+    margin-top: 8px;
+    border-collapse: collapse;
+  }
+
+  th,
+  td {
+    padding: 4px 8px;
+    border-bottom: 1px solid var(--app-borde);
+    text-align: left;
+  }
+
+  .num {
+    text-align: right;
+  }
+
+  button {
+    min-height: 32px;
+    padding: 0;
+    border: 0;
+    background: none;
+    color: var(--ion-color-primary);
+    font: inherit;
+    text-align: left;
+    text-decoration: underline;
+    cursor: pointer;
+  }
+
+  .resaltada {
+    background: var(--app-superficie-2);
+    font-weight: 600;
+  }
+}

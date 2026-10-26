@@ -1,0 +1,173 @@
+:host {
+  display: block;
+}
+
+.barra {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px 16px;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 12px;
+}
+
+.buscador {
+  display: flex;
+  flex: 1 1 240px;
+  align-items: center;
+  gap: 8px;
+  max-width: 420px;
+  padding: 0 12px;
+  border: 1px solid var(--app-borde);
+  border-radius: 8px;
+  background: var(--ion-background-color);
+
+  &:focus-within {
+    outline: 3px solid var(--app-foco);
+    outline-offset: 1px;
+  }
+
+  input {
+    flex: 1;
+    min-height: 44px;
+    border: 0;
+    background: transparent;
+    color: inherit;
+    font: inherit;
+    outline: none;
+  }
+}
+
+.contador {
+  margin: 0;
+  color: var(--app-texto-secundario);
+  font-size: 0.875rem;
+}
+
+.contenedor-tabla {
+  overflow-x: auto;
+  border: 1px solid var(--app-borde);
+  border-radius: 10px;
+}
+
+table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 0.9375rem;
+}
+
+th,
+td {
+  padding: 10px 12px;
+  text-align: left;
+  border-bottom: 1px solid var(--app-borde);
+}
+
+th {
+  background: var(--app-superficie-2);
+  font-weight: 600;
+  white-space: nowrap;
+}
+
+.numerico {
+  text-align: right;
+}
+
+.ordenar {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  min-height: 32px;
+  padding: 0;
+  border: 0;
+  background: none;
+  color: inherit;
+  font: inherit;
+  cursor: pointer;
+}
+
+tbody tr:hover {
+  background: var(--app-superficie-2);
+}
+
+tr.seleccionable {
+  cursor: pointer;
+}
+
+tr.vacia td {
+  padding: 32px;
+  text-align: center;
+  color: var(--app-texto-secundario);
+}
+
+.acciones {
+  white-space: nowrap;
+  text-align: right;
+}
+
+.acciones-cab {
+  text-align: right;
+}
+
+.estado {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 8px;
+  padding: 40px 16px;
+  color: var(--app-texto-secundario);
+}
+
+.estado.error {
+  color: var(--ion-color-danger);
+}
+
+.paginacion {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 12px;
+  margin-top: 12px;
+}
+
+/* Mobile-first: por debajo de 640px cada fila se presenta como una tarjeta. */
+@media (max-width: 639px) {
+  .contenedor-tabla {
+    border: 0;
+  }
+
+  table,
+  tbody,
+  tr,
+  td {
+    display: block;
+  }
+
+  thead,
+  .ocultar-movil {
+    display: none;
+  }
+
+  tbody tr {
+    margin-bottom: 12px;
+    border: 1px solid var(--app-borde);
+    border-radius: 10px;
+  }
+
+  td {
+    display: flex;
+    justify-content: space-between;
+    gap: 12px;
+    text-align: right;
+
+    &::before {
+      content: attr(data-etiqueta);
+      font-weight: 600;
+      text-align: left;
+    }
+  }
+
+  tr.vacia td::before {
+    content: none;
+  }
+}
