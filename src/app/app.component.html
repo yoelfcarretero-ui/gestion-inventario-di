@@ -1,33 +1,55 @@
 <ion-app>
-  <ion-split-pane contentId="main-content">
-    <ion-menu contentId="main-content" type="overlay">
+  <a class="saltar" href="#contenido-principal" (click)="saltarAlContenido($event)">Saltar al contenido principal</a>
+
+  <ion-split-pane contentId="main-content" [disabled]="!auth.autenticado()">
+    <ion-menu contentId="main-content" type="overlay" [disabled]="!auth.autenticado()" aria-label="Menú principal">
       <ion-content>
-        <ion-list id="inbox-list">
-          <ion-list-header>Inbox</ion-list-header>
-          <ion-note>hi&#64;ionicframework.com</ion-note>
+        <nav aria-label="Navegación principal">
+          <ion-list id="menu-principal">
+            <ion-list-header>
+              <span class="marca">Gestión de Inventario</span>
+            </ion-list-header>
+            @if (auth.usuario(); as usuario) {
+              <div class="usuario">
+                <span class="avatar" aria-hidden="true">{{ auth.iniciales() }}</span>
+                <span class="datos">
+                  <span class="nombre">{{ usuario.nombre }}</span>
+                  <ion-note>
+                    <span [class]="'badge estado-' + usuario.rol">{{ usuario.rol === 'admin' ? 'Administrador' : 'Usuario estándar' }}</span>
+                  </ion-note>
+                </span>
+              </div>
+            }
 
-          @for (p of appPages; track p; let i = $index) {
-            <ion-menu-toggle auto-hide="false">
-              <ion-item routerDirection="root" [routerLink]="[p.url]" lines="none" detail="false" routerLinkActive="selected">
-                <ion-icon aria-hidden="true" slot="start" [ios]="p.icon + '-outline'" [md]="p.icon + '-sharp'"></ion-icon>
-                <ion-label>{{ p.title }}</ion-label>
-              </ion-item>
-            </ion-menu-toggle>
-          }
-        </ion-list>
-
-        <ion-list id="labels-list">
-          <ion-list-header>Labels</ion-list-header>
-
-          @for (label of labels; track label) {
-            <ion-item lines="none">
-              <ion-icon aria-hidden="true" slot="start" ios="bookmark-outline" md="bookmark-sharp"></ion-icon>
-              <ion-label>{{ label }}</ion-label>
-            </ion-item>
-          }
-        </ion-list>
+            @for (p of paginas(); track p.url) {
+              <ion-menu-toggle [autoHide]="false">
+                <ion-item
+                  routerDirection="root"
+                  [routerLink]="[p.url]"
+                  lines="none"
+                  [detail]="false"
+                  routerLinkActive="selected"
+                  #rla="routerLinkActive"
+                  [attr.aria-current]="rla.isActive ? 'page' : null"
+                >
+                  <ion-icon aria-hidden="true" slot="start" [ios]="p.icono + '-outline'" [md]="p.icono + '-sharp'"></ion-icon>
+                  <ion-label>{{ p.titulo }}</ion-label>
+                </ion-item>
+              </ion-menu-toggle>
+            }
+          </ion-list>
+        </nav>
       </ion-content>
+      <ion-footer class="ion-padding">
+        <ion-menu-toggle [autoHide]="false">
+          <ion-button expand="block" fill="outline" color="medium" (click)="auth.cerrarSesion()">
+            <ion-icon slot="start" name="log-out-outline" aria-hidden="true"></ion-icon>
+            Cerrar sesión
+          </ion-button>
+        </ion-menu-toggle>
+      </ion-footer>
     </ion-menu>
+
     <ion-router-outlet id="main-content"></ion-router-outlet>
   </ion-split-pane>
 </ion-app>

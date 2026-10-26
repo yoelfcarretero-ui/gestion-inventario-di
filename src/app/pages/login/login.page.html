@@ -1,0 +1,56 @@
+<ion-content class="ion-padding">
+  <main class="acceso" id="contenido-principal">
+    <div class="tarjeta panel">
+      <div class="logo" aria-hidden="true">
+        <ion-icon name="cube-outline"></ion-icon>
+      </div>
+      <h1>Iniciar sesión</h1>
+      <p class="subtitulo">Gestión de Inventario y Pedidos</p>
+
+      @if (aviso()) {
+        <p class="alerta info" role="status">{{ aviso() }}</p>
+      }
+      @if (error()) {
+        <p class="alerta error" role="alert">{{ error() }}</p>
+      }
+
+      <form [formGroup]="form" (ngSubmit)="enviar()" novalidate>
+        <ion-input
+          formControlName="email"
+          type="email"
+          label="Correo electrónico"
+          labelPlacement="stacked"
+          fill="outline"
+          autocomplete="username"
+          inputmode="email"
+          [errorText]="errorEmail()"
+          required
+        ></ion-input>
+
+        <ion-input
+          formControlName="password"
+          type="password"
+          label="Contraseña"
+          labelPlacement="stacked"
+          fill="outline"
+          autocomplete="current-password"
+          [errorText]="errorPassword()"
+          required
+        >
+          <ion-input-password-toggle slot="end" showLabel="Mostrar contraseña" hideLabel="Ocultar contraseña"></ion-input-password-toggle>
+        </ion-input>
+
+        <ion-button type="submit" expand="block" [disabled]="enviando()">
+          @if (enviando()) {
+            <ion-spinner name="crescent" aria-hidden="true"></ion-spinner>
+            <span class="sr-only">Iniciando sesión…</span>
+          } @else {
+            Entrar
+          }
+        </ion-button>
+      </form>
+
+      <p class="pie">¿No tienes cuenta? <a routerLink="/registro">Crear una cuenta</a></p>
+    </div>
+  </main>
+</ion-content>
