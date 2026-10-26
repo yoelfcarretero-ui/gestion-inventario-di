@@ -1,16 +1,15 @@
-// This file can be replaced during build by using the `fileReplacements` array.
-// `ng build` replaces `environment.ts` with `environment.prod.ts`.
-// The list of file replacements can be found in `angular.json`.
-
-export const environment = {
-  production: false
-};
-
-/*
- * For easier debugging in development mode, you can import the following file
- * to ignore zone related error stack frames such as `zone.run`, `zoneDelegate.invokeTask`.
- *
- * This import should be commented out in production mode because it will have a negative impact
- * on performance if an error is thrown.
+/**
+ * Configuración del entorno de desarrollo.
+ * `ng build` (producción) sustituye este fichero por `environment.prod.ts`.
  */
-// import 'zone.js/plugins/zone-error';  // Included with Angular CLI.
+export const environment = {
+  production: false,
+  /** Prefijo de la API REST (SQL). Lo atiende el backend simulado en el navegador. */
+  apiUrl: '/api',
+  /** Latencia simulada de red (ms) para la API REST y el almacén NoSQL. */
+  latenciaSimulada: { min: 250, max: 700 },
+  /** Probabilidad (0-1) de que una petición simulada falle, para probar la gestión de errores. */
+  tasaFalloSimulada: 0,
+  /** Duración de la sesión emitida por el backend simulado (minutos). */
+  duracionSesionMin: 120,
+};
