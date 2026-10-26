@@ -1,2 +1,67 @@
-// For information on how to create your own theme, please refer to:
+// Tema de la aplicación.
+// Todos los colores con texto blanco encima superan una relación de contraste de 4.5:1 (WCAG 2.2 AA, 1.4.3).
 // https://ionicframework.com/docs/theming/
+
+:root {
+  --ion-font-family: 'Inter', system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif;
+
+  --ion-color-primary: #1e40af; // 8.7:1 sobre blanco
+  --ion-color-primary-rgb: 30, 64, 175;
+  --ion-color-primary-contrast: #ffffff;
+  --ion-color-primary-contrast-rgb: 255, 255, 255;
+  --ion-color-primary-shade: #1a389a;
+  --ion-color-primary-tint: #3553b7;
+
+  --ion-color-secondary: #0f766e; // 5.5:1
+  --ion-color-secondary-rgb: 15, 118, 110;
+  --ion-color-secondary-contrast: #ffffff;
+  --ion-color-secondary-contrast-rgb: 255, 255, 255;
+  --ion-color-secondary-shade: #0d6861;
+  --ion-color-secondary-tint: #27847c;
+
+  --ion-color-tertiary: #6d28d9; // 7.1:1
+  --ion-color-tertiary-rgb: 109, 40, 217;
+  --ion-color-tertiary-contrast: #ffffff;
+  --ion-color-tertiary-contrast-rgb: 255, 255, 255;
+  --ion-color-tertiary-shade: #6023bf;
+  --ion-color-tertiary-tint: #7c3edd;
+
+  --ion-color-success: #15803d; // 5.0:1
+  --ion-color-success-rgb: 21, 128, 61;
+  --ion-color-success-contrast: #ffffff;
+  --ion-color-success-contrast-rgb: 255, 255, 255;
+  --ion-color-success-shade: #127136;
+  --ion-color-success-tint: #2c8d50;
+
+  --ion-color-warning: #a14c06; // 5.9:1
+  --ion-color-warning-rgb: 161, 76, 6;
+  --ion-color-warning-contrast: #ffffff;
+  --ion-color-warning-contrast-rgb: 255, 255, 255;
+  --ion-color-warning-shade: #8e4305;
+  --ion-color-warning-tint: #aa5e1f;
+
+  --ion-color-danger: #b91c1c; // 6.5:1
+  --ion-color-danger-rgb: 185, 28, 28;
+  --ion-color-danger-contrast: #ffffff;
+  --ion-color-danger-contrast-rgb: 255, 255, 255;
+  --ion-color-danger-shade: #a31919;
+  --ion-color-danger-tint: #c03333;
+
+  --ion-color-medium: #4b5563; // 7.6:1
+  --ion-color-medium-rgb: 75, 85, 99;
+  --ion-color-medium-contrast: #ffffff;
+  --ion-color-medium-contrast-rgb: 255, 255, 255;
+  --ion-color-medium-shade: #424b57;
+  --ion-color-medium-tint: #5d6673;
+
+  --ion-background-color: #ffffff;
+  --ion-text-color: #111827;
+
+  // Tokens propios de la aplicación
+  --app-fondo: #f3f4f6;
+  --app-superficie: #ffffff;
+  --app-superficie-2: #f3f4f6;
+  --app-borde: #d1d5db;
+  --app-texto-secundario: #4b5563; // 7.6:1 sobre blanco, 6.9:1 sobre #f3f4f6
+  --app-foco: #f59e0b;
+}

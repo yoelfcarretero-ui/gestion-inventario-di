@@ -1,0 +1,141 @@
+<ion-header>
+  <ion-toolbar color="primary">
+    <ion-buttons slot="start">
+      <ion-menu-button aria-label="Abrir menú"></ion-menu-button>
+    </ion-buttons>
+    <ion-title>Ayuda</ion-title>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content class="ion-padding">
+  <main class="contenedor manual" id="contenido-principal">
+    <h1 class="titulo-pagina">Manual de usuario</h1>
+    <p>
+      Esta aplicación permite gestionar el catálogo de productos, el stock y los pedidos de la empresa.
+      Pulsa el botón <strong>?</strong> de la barra superior de cualquier pantalla para venir directamente a su sección.
+    </p>
+
+    <nav class="indice tarjeta" aria-labelledby="titulo-indice">
+      <h2 id="titulo-indice">Contenido</h2>
+      <ol>
+        @for (s of secciones; track s.id) {
+          <li>
+            <a [href]="'#' + s.id" (click)="irA(s.id, $event)">{{ s.titulo }}</a>
+            @if (s.soloAdmin) {
+              <span class="etiqueta-admin">Administrador</span>
+            }
+          </li>
+        }
+      </ol>
+    </nav>
+
+    <section id="primeros-pasos" class="tarjeta">
+      <h2 tabindex="-1">Primeros pasos</h2>
+      <ol>
+        <li>Abre la aplicación desde el navegador (ordenador, tablet o móvil). También puedes instalarla como aplicación (PWA) desde el menú del navegador: <em>Instalar aplicación</em>.</li>
+        <li>Inicia sesión con tu correo y contraseña. Si no tienes cuenta, pulsa <strong>Crear una cuenta</strong>: las cuentas nuevas tienen el rol <em>Usuario estándar</em>.</li>
+        <li>Usa el <strong>menú lateral</strong> para moverte entre pantallas. En móvil se abre con el botón ☰ de la esquina superior izquierda.</li>
+        <li>Para salir, pulsa <strong>Cerrar sesión</strong> al final del menú. Por seguridad, la sesión se cierra sola al caducar (2 horas).</li>
+      </ol>
+      <h3>Roles</h3>
+      <ul>
+        <li><strong>Usuario estándar</strong>: consulta el catálogo, hace pedidos, ve y cancela sus pedidos pendientes y descarga sus informes.</li>
+        <li><strong>Administrador</strong>: además gestiona productos y usuarios, cambia el estado de cualquier pedido y accede al cuadro de mando.</li>
+      </ul>
+    </section>
+
+    <section id="inicio" class="tarjeta">
+      <h2 tabindex="-1">Página de inicio</h2>
+      <p>Muestra un resumen adaptado a tu rol mediante tarjetas de indicadores. Las tarjetas con borde son <strong>pulsables</strong> y te llevan al listado correspondiente ya filtrado (por ejemplo, «Pedidos pendientes»).</p>
+      <p>Debajo aparecen los últimos pedidos y, para administradores, los productos que necesitan reposición.</p>
+    </section>
+
+    <section id="productos" class="tarjeta">
+      <h2 tabindex="-1">Productos</h2>
+      <ul>
+        <li><strong>Buscar</strong>: escribe en el buscador; filtra por cualquier columna e ignora mayúsculas y tildes.</li>
+        <li><strong>Filtrar</strong>: elige una categoría o activa «Solo bajo mínimo».</li>
+        <li><strong>Ordenar</strong>: pulsa el título de una columna (ascendente, descendente, sin orden).</li>
+        <li>En pantallas pequeñas cada producto se muestra como una tarjeta.</li>
+      </ul>
+      <h3>Alta y edición (Administrador)</h3>
+      <ol>
+        <li>Pulsa <strong>Nuevo producto</strong> o el icono de lápiz de una fila.</li>
+        <li>Rellena los campos obligatorios (*). El <strong>SKU</strong> sigue el formato <code>AAA-0000</code> y se comprueba en el servidor mientras escribes: verás «Comprobando…» y, después, si está disponible.</li>
+        <li>Pulsa <strong>Crear producto</strong> o <strong>Guardar cambios</strong>. Si hay errores, el foco se mueve al primer campo incorrecto.</li>
+      </ol>
+      <p>Para eliminar un producto pulsa el icono de papelera y confirma. La acción no se puede deshacer.</p>
+    </section>
+
+    <section id="pedidos" class="tarjeta">
+      <h2 tabindex="-1">Pedidos</h2>
+      <p>La lista de pedidos se actualiza <strong>en tiempo real</strong>: si otra persona cambia un pedido (por ejemplo en otra pestaña o dispositivo), lo verás sin recargar.</p>
+      <ul>
+        <li>Filtra por estado con las pestañas superiores (Todos, Pendientes, Enviados…).</li>
+        <li>Pulsa una fila (o selecciónala con Tab y pulsa Intro) para ver el detalle con sus líneas.</li>
+      </ul>
+      <h3>Hacer un pedido</h3>
+      <ol>
+        <li>Pulsa <strong>Nuevo pedido</strong>.</li>
+        <li>Elige un producto y las unidades. Con <strong>Añadir artículo</strong> puedes incluir más productos. No se pueden pedir más unidades de las disponibles.</li>
+        <li>Revisa el total y pulsa <strong>Confirmar pedido</strong>. El stock se descuenta automáticamente.</li>
+      </ol>
+      <h3>Estados</h3>
+      <p>
+        <span class="badge estado-pendiente">Pendiente</span> →
+        <span class="badge estado-enviado">Enviado</span> →
+        <span class="badge estado-entregado">Entregado</span>.
+        Un pedido pendiente puede pasar a <span class="badge estado-cancelado">Cancelado</span>; al cancelarlo se repone el stock.
+        Solo los administradores pueden marcar pedidos como enviados o entregados.
+      </p>
+    </section>
+
+    <section id="informes" class="tarjeta">
+      <h2 tabindex="-1">Informes PDF y CSV</h2>
+      <ol>
+        <li>Elige el tipo de informe (inventario, pedidos y, si eres administrador, reposición y usuarios).</li>
+        <li>Revisa los datos en la tabla de vista previa.</li>
+        <li>Pulsa <strong>Descargar PDF</strong> (documento maquetado con cabecera, tabla y resumen) o <strong>Descargar CSV</strong> (para abrir en Excel o LibreOffice; usa punto y coma como separador).</li>
+      </ol>
+    </section>
+
+    <section id="dashboard" class="tarjeta">
+      <h2 tabindex="-1">Cuadro de mando <span class="etiqueta-admin">Administrador</span></h2>
+      <p>Consolida los pedidos (en tiempo real) y el catálogo para mostrar indicadores y gráficos.</p>
+      <ul>
+        <li>Cambia el <strong>periodo</strong>, la <strong>categoría</strong> o el <strong>estado</strong> en los selectores superiores: todo se recalcula al instante.</li>
+        <li>Pulsa una barra del gráfico «Ventas por categoría» o un sector de «Pedidos por estado» para filtrar por ese valor. Vuelve a pulsarlo para quitar el filtro.</li>
+        <li>Sin ratón: abre «Ver datos» bajo cada gráfico; cada fila es un botón que aplica el mismo filtro.</li>
+        <li><strong>Exportar PDF</strong> descarga el resumen con los filtros aplicados.</li>
+      </ul>
+    </section>
+
+    <section id="usuarios" class="tarjeta">
+      <h2 tabindex="-1">Usuarios y roles <span class="etiqueta-admin">Administrador</span></h2>
+      <p>Permite ascender a un usuario a administrador, quitarle ese rol, o desactivar/activar su cuenta. Una cuenta desactivada no puede iniciar sesión. No puedes modificar tu propia cuenta.</p>
+    </section>
+
+    <section id="accesibilidad" class="tarjeta">
+      <h2 tabindex="-1">Accesibilidad y teclado</h2>
+      <ul>
+        <li><kbd>Tab</kbd> / <kbd>Mayús</kbd> + <kbd>Tab</kbd>: avanzar y retroceder entre elementos. El elemento activo se marca con un borde naranja.</li>
+        <li>El primer <kbd>Tab</kbd> de cada página muestra el enlace <strong>Saltar al contenido principal</strong>.</li>
+        <li><kbd>Intro</kbd> o <kbd>Espacio</kbd>: activar botones y enlaces. <kbd>Esc</kbd>: cerrar menús y diálogos.</li>
+        <li>El texto se adapta al tamaño de letra del sistema y se puede ampliar con el zoom del navegador (<kbd>Ctrl</kbd> + <kbd>+</kbd>) sin perder contenido.</li>
+        <li>Los gráficos tienen una tabla de datos equivalente para lectores de pantalla.</li>
+      </ul>
+    </section>
+
+    <section id="preguntas" class="tarjeta">
+      <h2 tabindex="-1">Preguntas frecuentes</h2>
+      <dl>
+        <dt>¿Por qué me ha llevado a la pantalla de inicio de sesión?</dt>
+        <dd>Tu sesión ha caducado o se ha cerrado. Vuelve a entrar y te llevaremos a la página que querías ver.</dd>
+        <dt>Veo «Acceso denegado».</dt>
+        <dd>Esa pantalla es solo para administradores. Pide a un administrador que cambie tu rol si lo necesitas.</dd>
+        <dt>¿Los datos son reales?</dt>
+        <dd>No. Es un entorno de demostración con datos sintéticos; se guardan en tu navegador.</dd>
+      </dl>
+    </section>
+  </main>
+</ion-content>
