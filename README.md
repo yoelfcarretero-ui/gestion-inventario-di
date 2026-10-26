@@ -6,8 +6,8 @@ Funciona como aplicación web progresiva (PWA) instalable y se adapta a móvil, 
 > Proyecto del módulo **Desarrollo de Interfaces (0488)** · CFGS Desarrollo de Aplicaciones Multiplataforma.
 > Autor: **Yoel Carretero**.
 
-- **Aplicación en producción:** _(añadir la URL de Vercel)_
-- **Documentación técnica (Compodoc):** `/docs` dentro del despliegue (p. ej. `https://<app>.vercel.app/docs`)
+- **Aplicación en producción:** https://gestion-inventario-di.vercel.app
+- **Documentación técnica (Compodoc):** https://gestion-inventario-di.vercel.app/docs/
 - **Manual de usuario:** [docs/MANUAL_USUARIO.md](docs/MANUAL_USUARIO.md) y la sección **Ayuda** dentro de la app.
 
 ---
