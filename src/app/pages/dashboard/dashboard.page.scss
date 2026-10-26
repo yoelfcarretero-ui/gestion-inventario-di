@@ -1,0 +1,42 @@
+.filtros {
+  display: grid;
+  gap: 12px;
+  grid-template-columns: 1fr;
+  margin-bottom: 16px;
+
+  @media (min-width: 768px) {
+    grid-template-columns: repeat(3, 1fr);
+  }
+
+  @media (min-width: 1100px) {
+    grid-template-columns: repeat(3, 1fr) auto;
+    align-items: end;
+  }
+
+  .acciones {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+  }
+}
+
+.activos {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 4px;
+  margin-bottom: 16px;
+}
+
+.cargando {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  color: var(--app-texto-secundario);
+}
+
+.pista {
+  margin: -4px 0 12px;
+  color: var(--app-texto-secundario);
+  font-size: 0.875rem;
+}
