@@ -1,0 +1,90 @@
+<ion-header>
+  <ion-toolbar color="primary">
+    <ion-buttons slot="start">
+      <ion-back-button defaultHref="/pedidos" text="Volver"></ion-back-button>
+    </ion-buttons>
+    <ion-title>Nuevo pedido</ion-title>
+    <ion-buttons slot="end">
+      <app-boton-ayuda seccion="pedidos" tema="cómo hacer un pedido" />
+    </ion-buttons>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content class="ion-padding">
+  <main class="contenedor" id="contenido-principal">
+    <h1 class="titulo-pagina">Nuevo pedido</h1>
+
+    @if (error()) {
+      <p class="alerta error" role="alert">{{ error() }}</p>
+    }
+
+    <form class="formulario tarjeta" [formGroup]="form" (ngSubmit)="confirmar()" novalidate>
+      <fieldset formArrayName="lineas">
+        <legend>Artículos del pedido</legend>
+
+        @for (linea of resumenLineas(); track linea.grupo; let i = $index) {
+          <div class="linea" [formGroupName]="i" role="group" [attr.aria-label]="'Línea ' + (i + 1)">
+            <ion-select
+              class="producto"
+              formControlName="productoId"
+              [label]="'Producto (línea ' + (i + 1) + ')'"
+              labelPlacement="stacked"
+              fill="outline"
+              interface="popover"
+              placeholder="Selecciona un producto"
+              [errorText]="linea.errorProducto"
+            >
+              @for (p of disponibles(); track p.id) {
+                <ion-select-option [value]="p.id">{{ p.nombre }} — {{ formatearMoneda(p.precio) }} ({{ p.stock }} disp.)</ion-select-option>
+              }
+            </ion-select>
+
+            <ion-input
+              class="cantidad"
+              formControlName="cantidad"
+              type="number"
+              inputmode="numeric"
+              min="1"
+              [label]="'Unidades (línea ' + (i + 1) + ')'"
+              labelPlacement="stacked"
+              fill="outline"
+              [errorText]="linea.errorCantidad"
+            ></ion-input>
+
+            <p class="subtotal" aria-live="polite">{{ formatearMoneda(linea.subtotal) }}</p>
+
+            <ion-button
+              fill="clear"
+              color="danger"
+              [disabled]="resumenLineas().length === 1"
+              (click)="quitarLinea(i)"
+              [attr.aria-label]="'Quitar línea ' + (i + 1)"
+            >
+              <ion-icon slot="icon-only" name="trash-outline" aria-hidden="true"></ion-icon>
+            </ion-button>
+          </div>
+        }
+
+        @if (errorDuplicado()) {
+          <p class="error-campo" role="alert">Hay productos repetidos: agrupa las unidades en una sola línea.</p>
+        }
+
+        <ion-button fill="outline" (click)="agregarLinea()">
+          <ion-icon slot="start" name="add-circle-outline" aria-hidden="true"></ion-icon>
+          Añadir artículo
+        </ion-button>
+      </fieldset>
+
+      <p class="total" aria-live="polite">Total del pedido: <strong>{{ formatearMoneda(total()) }}</strong></p>
+
+      <ion-button type="submit" expand="block" [disabled]="enviando()">
+        @if (enviando()) {
+          <ion-spinner name="crescent" aria-hidden="true"></ion-spinner>
+          <span class="sr-only">Registrando pedido…</span>
+        } @else {
+          Confirmar pedido
+        }
+      </ion-button>
+    </form>
+  </main>
+</ion-content>

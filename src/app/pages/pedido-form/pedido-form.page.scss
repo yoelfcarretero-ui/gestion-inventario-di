@@ -1,0 +1,62 @@
+fieldset {
+  margin: 0 0 16px;
+  padding: 0;
+  border: 0;
+}
+
+legend {
+  margin-bottom: 12px;
+  font-size: 1.125rem;
+  font-weight: 600;
+}
+
+.linea {
+  display: grid;
+  gap: 8px;
+  align-items: start;
+  grid-template-columns: 1fr auto;
+  grid-template-areas:
+    'producto producto'
+    'cantidad borrar'
+    'subtotal subtotal';
+  padding: 12px 0;
+  border-bottom: 1px solid var(--app-borde);
+
+  @media (min-width: 768px) {
+    grid-template-columns: 1fr 140px 120px auto;
+    grid-template-areas: 'producto cantidad subtotal borrar';
+  }
+}
+
+.producto {
+  grid-area: producto;
+}
+
+.cantidad {
+  grid-area: cantidad;
+}
+
+.subtotal {
+  grid-area: subtotal;
+  margin: 0;
+  padding-top: 8px;
+  font-weight: 600;
+  text-align: right;
+
+  @media (min-width: 768px) {
+    padding-top: 32px;
+  }
+}
+
+.linea ion-button {
+  grid-area: borrar;
+
+  @media (min-width: 768px) {
+    margin-top: 22px;
+  }
+}
+
+.total {
+  font-size: 1.125rem;
+  text-align: right;
+}
