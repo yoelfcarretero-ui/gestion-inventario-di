@@ -1,0 +1,86 @@
+<ion-header>
+  <ion-toolbar color="primary">
+    <ion-buttons slot="start">
+      <ion-menu-button aria-label="Abrir menú"></ion-menu-button>
+    </ion-buttons>
+    <ion-title>Pedidos</ion-title>
+    <ion-buttons slot="end">
+      <app-boton-ayuda seccion="pedidos" tema="pedidos" />
+    </ion-buttons>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content class="ion-padding">
+  <main class="contenedor" id="contenido-principal">
+    <div class="cabecera">
+      <h1 class="titulo-pagina">{{ auth.esAdmin() ? 'Todos los pedidos' : 'Mis pedidos' }}</h1>
+      <span class="en-directo" title="Los cambios se reciben al instante">
+        <ion-icon name="radio-outline" aria-hidden="true"></ion-icon> En tiempo real
+      </span>
+    </div>
+
+    <div class="barra-acciones">
+      <ion-segment [(ngModel)]="filtro" [scrollable]="true" aria-label="Filtrar por estado">
+        @for (f of filtros; track f.valor) {
+          <ion-segment-button [value]="f.valor">
+            <ion-label>{{ f.etiqueta }} ({{ contadores()[f.valor] }})</ion-label>
+          </ion-segment-button>
+        }
+      </ion-segment>
+      <ion-button (click)="nuevo()">
+        <ion-icon slot="start" name="add" aria-hidden="true"></ion-icon>
+        Nuevo pedido
+      </ion-button>
+    </div>
+
+    <div class="disposicion" [class.con-detalle]="detalle()">
+      <app-tabla-datos
+        titulo="Pedidos"
+        [columnas]="columnas()"
+        [filas]="filas()"
+        [acciones]="acciones()"
+        [cargando]="pedidos() === undefined"
+        [columnaNombre]="'id'"
+        [(busqueda)]="busqueda"
+        seleccionable
+        (filaSeleccionada)="seleccionado.set($event)"
+        (accion)="alAccion($event)"
+        textoVacio="No hay pedidos con este filtro."
+      />
+
+      @if (detalle(); as p) {
+        <aside class="tarjeta detalle" aria-labelledby="titulo-detalle">
+          <div class="cabecera-detalle">
+            <h2 id="titulo-detalle">Pedido {{ p.id }}</h2>
+            <ion-button fill="clear" size="small" (click)="seleccionado.set(null)" aria-label="Cerrar detalle">
+              <ion-icon slot="icon-only" name="close-circle-outline" aria-hidden="true"></ion-icon>
+            </ion-button>
+          </div>
+          <p><span [class]="'badge estado-' + p.estado">{{ p.estado }}</span></p>
+          <dl>
+            <dt>Cliente</dt>
+            <dd>{{ p.usuarioNombre }}</dd>
+            <dt>Creado</dt>
+            <dd>{{ formatearFecha(p.creadoEn) }}</dd>
+            <dt>Última actualización</dt>
+            <dd>{{ formatearFecha(p.actualizadoEn) }}</dd>
+          </dl>
+          <table class="lineas">
+            <caption class="sr-only">Líneas del pedido {{ p.id }}</caption>
+            <thead>
+              <tr><th scope="col">Producto</th><th scope="col" class="num">Uds.</th><th scope="col" class="num">Importe</th></tr>
+            </thead>
+            <tbody>
+              @for (l of p.lineas; track $index) {
+                <tr><td>{{ l.nombre }}</td><td class="num">{{ l.cantidad }}</td><td class="num">{{ subtotal(l) }}</td></tr>
+              }
+            </tbody>
+            <tfoot>
+              <tr><th scope="row" colspan="2">Total</th><td class="num"><strong>{{ formatearMoneda(p.total) }}</strong></td></tr>
+            </tfoot>
+          </table>
+        </aside>
+      }
+    </div>
+  </main>
+</ion-content>
