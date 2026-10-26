@@ -1,0 +1,44 @@
+<figure class="grafico">
+  <figcaption>
+    <h3>{{ titulo() }}</h3>
+    @if (descripcion()) {
+      <p [id]="idDescripcion">{{ descripcion() }}</p>
+    }
+  </figcaption>
+
+  <div class="lienzo" [class.circular]="esCircular()">
+    <canvas
+      #lienzo
+      role="img"
+      [attr.aria-label]="'Gráfico: ' + titulo() + '. Los datos están disponibles en la tabla «Ver datos».'"
+      [attr.aria-describedby]="descripcion() ? idDescripcion : null"
+    ></canvas>
+  </div>
+
+  <details class="datos">
+    <summary>Ver datos de «{{ titulo() }}»</summary>
+    <table>
+      <caption class="sr-only">Datos de {{ titulo() }}</caption>
+      <thead>
+        <tr>
+          <th scope="col">Categoría</th>
+          @for (s of series(); track s.etiqueta) {
+            <th scope="col" class="num">{{ s.etiqueta }}</th>
+          }
+        </tr>
+      </thead>
+      <tbody>
+        @for (etiqueta of etiquetas(); track $index; let i = $index) {
+          <tr [class.resaltada]="resaltado() === i">
+            <th scope="row">
+              <button type="button" (click)="seleccionar(i)" [attr.aria-pressed]="resaltado() === i">{{ etiqueta }}</button>
+            </th>
+            @for (s of series(); track s.etiqueta) {
+              <td class="num">{{ formatoValor()(s.datos[i]) }}</td>
+            }
+          </tr>
+        }
+      </tbody>
+    </table>
+  </details>
+</figure>
