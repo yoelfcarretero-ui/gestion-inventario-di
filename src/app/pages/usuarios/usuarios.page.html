@@ -1,0 +1,31 @@
+<ion-header>
+  <ion-toolbar color="primary">
+    <ion-buttons slot="start">
+      <ion-menu-button aria-label="Abrir menú"></ion-menu-button>
+    </ion-buttons>
+    <ion-title>Usuarios</ion-title>
+    <ion-buttons slot="end">
+      <app-boton-ayuda seccion="usuarios" tema="la gestión de usuarios" />
+    </ion-buttons>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content class="ion-padding">
+  <main class="contenedor" id="contenido-principal">
+    <h1 class="titulo-pagina">Usuarios y roles</h1>
+    <p class="ayuda-campo">Por seguridad no puedes cambiar tu propio rol ni desactivar tu cuenta.</p>
+
+    <app-tabla-datos
+      titulo="Usuarios"
+      [columnas]="columnas"
+      [filas]="filas()"
+      [acciones]="acciones"
+      [cargando]="cargando()"
+      [error]="error()"
+      [columnaNombre]="'nombre'"
+      [(busqueda)]="busqueda"
+      (accion)="alAccion($event)"
+      (reintentar)="cargar()"
+    />
+  </main>
+</ion-content>
